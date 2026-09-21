@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream-50 text-graphite-900 antialiased;
+}
+
+::selection {
+  @apply bg-amber-600/20;
+}
+
+.container-app {
+  @apply mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-graphite-900 px-7 py-4 text-sm font-semibold tracking-wide text-cream-50 shadow-soft transition-transform duration-150 hover:scale-[1.02] hover:bg-graphite-800 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-graphite-900/15 bg-transparent px-6 py-3.5 text-sm font-semibold text-graphite-900 transition-colors hover:bg-graphite-900/5;
+}
+
+.section {
+  @apply py-16 sm:py-24;
+}
+
+.eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.18em] text-amber-700;
+}

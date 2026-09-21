@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  CREATED
+  PIX_GENERATED
+  PENDING
+  PAID
+  EXPIRED
+  CANCELLED
+  REFUNDED
+  CHARGEBACK
+  FAILED
+}
+
+enum ProductType {
+  MAIN
+  COMPLEMENTARY
+  ORDER_BUMP
+  UPSELL
+}
+
+enum CartStatus {
+  OPEN
+  RECOVERED
+  ABANDONED
+}
+
+model Admin {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  adminId   String
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+}
+
+model Product {
+  id                String      @id @default(cuid())
+  name              String
+  slug              String      @unique
+  description       String?
+  priceCents        Int
+  compareAtCents    Int?
+  bravopayProductId String?
+  images            String[]    @default([])
+  type              ProductType @default(COMPLEMENTARY)
+  active            Boolean     @default(true)
+  featured          Boolean     @default(false)
+  sortOrder         Int         @default(0)
+  orderBumpEnabled  Boolean     @default(false)
+  orderBumpPriceCents Int?
+  orderBumpHeadline String?
+  upsellEnabled     Boolean     @default(false)
+  upsellPriceCents  Int?
+  upsellHeadline    String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  orderItems        OrderItem[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String
+  cpf       String
+  createdAt DateTime @default(now())
+  orders    Order[]
+  abandonedCarts AbandonedCart[]
+
+  @@index([cpf])
+  @@index([phone])
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  displayId         String      @unique
+  customerId        String
+  customer          Customer    @relation(fields: [customerId], references: [id])
+  status            OrderStatus @default(CREATED)
+
+  shippingZip       String
+  shippingAddress   String
+  shippingNumber    String
+  shippingComplement String?
+  shippingNeighborhood String
+  shippingCity      String
+  shippingState     String
+
+  subtotalCents     Int
+  shippingCents     Int         @default(0)
+  discountCents     Int         @default(0)
+  totalCents        Int
+
+  bravopayTransactionId String? @unique
+  pixCopyPaste      String?
+  pixExpiresAt      DateTime?
+  idempotencyKey    String      @unique
+
+  paidAt            DateTime?
+  lastCheckedAt     DateTime?
+  isUpsellOrder     Boolean     @default(false)
+  parentOrderId     String?
+
+  utmSource         String?
+  utmMedium         String?
+  utmCampaign       String?
+  utmContent        String?
+  utmTerm           String?
+  fbclid            String?
+  gclid             String?
+  ttclid            String?
+  metaEventId       String?
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  items             OrderItem[]
+  payments          Payment[]
+  trackingEvents    TrackingEvent[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerId])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  name        String
+  kind        String   @default("main") // main | order_bump | upsell
+  quantity    Int      @default(1)
+  unitPriceCents Int
+  totalCents  Int
+
+  @@index([orderId])
+}
+
+model Payment {
+  id                    String   @id @default(cuid())
+  orderId               String
+  order                 Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  bravopayTransactionId String   @unique
+  status                String
+  amountCents           Int
+  netCents              Int?
+  feeCents              Int?
+  method                String   @default("pix")
+  rawPayload            Json?
+  createdAt             DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model AbandonedCart {
+  id            String     @id @default(cuid())
+  customerId    String?
+  customer      Customer?  @relation(fields: [customerId], references: [id])
+  customerName  String
+  email         String
+  phone         String
+  orderId       String?    @unique
+  cartValueCents Int
+  status        CartStatus @default(OPEN)
+  recoveredAt   DateTime?
+  emailSentAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status])
+  @@index([email])
+}
+
+model TrackingEvent {
+  id         String   @id @default(cuid())
+  orderId    String?
+  order      Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  eventName  String
+  eventId    String?
+  utmSource  String?
+  utmMedium  String?
+  utmCampaign String?
+  utmContent String?
+  utmTerm    String?
+  fbclid     String?
+  gclid      String?
+  path       String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([eventName])
+  @@index([createdAt])
+}
+
+model WebhookEvent {
+  id          String   @id @default(cuid())
+  provider    String   @default("bravopay")
+  eventId     String   @unique
+  eventType   String
+  payload     Json
+  processedAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

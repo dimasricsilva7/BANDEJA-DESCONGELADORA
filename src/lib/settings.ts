@@ -1,0 +1,28 @@
+import { db } from "@/lib/db";
+
+export const DEFAULT_SETTINGS = {
+  store_name: "Cozinha Prática",
+  main_price_cents: "14790",
+  compare_at_cents: "28198",
+  shipping_days: "5",
+  guarantee_text: "Garantia total ou seu dinheiro de volta",
+  contact_email: "contato@cozinhapratica.com.br",
+  contact_whatsapp: "",
+};
+
+export type SettingsMap = Record<string, string>;
+
+export async function getSettings(): Promise<SettingsMap> {
+  const rows = await db.setting.findMany();
+  const map: SettingsMap = { ...DEFAULT_SETTINGS };
+  for (const row of rows) map[row.key] = row.value;
+  return map;
+}
+
+export async function setSetting(key: string, value: string) {
+  await db.setting.upsert({
+    where: { key },
+    update: { value },
+    create: { key, value },
+  });
+}
