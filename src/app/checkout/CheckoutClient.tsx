@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import QRCode from "qrcode";
-import { Check, Copy, Loader2, ShieldCheck, Lock, User, MapPin, ShoppingBag } from "lucide-react";
+import { Check, Copy, Loader2, ShieldCheck, Lock, User, MapPin, ShoppingBag, FileText, Sparkles } from "lucide-react";
 import { formatBRL } from "@/lib/pricing";
 import { trackPixel } from "@/components/MetaPixel";
 import { readAttribution } from "@/components/TrackingCapture";
@@ -16,7 +16,8 @@ type OrderBump = {
   name: string;
   priceCents: number;
   compareAtCents?: number;
-  image: string;
+  image: string | null;
+  featured?: boolean;
   headline: string;
 };
 type Product = { slug: string; name: string; priceCents: number; compareAtCents?: number; image: string };
@@ -273,6 +274,8 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
   }
 
   const selectedBumpList = orderBumps.filter((b) => selectedBumps.has(b.id));
+  const featuredBumps = orderBumps.filter((b) => b.featured);
+  const regularBumps = orderBumps.filter((b) => !b.featured);
 
   return (
     <main className="min-h-screen bg-cream-50 py-6 sm:py-10">
@@ -308,40 +311,22 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
               </div>
             </SectionCard>
 
-            {orderBumps.length > 0 && (
-              <SectionCard icon={ShoppingBag} step={3} title="Produtos adicionais" optional>
+            {featuredBumps.length > 0 && (
+              <SectionCard icon={Sparkles} step={3} title="Oferta especial" optional>
                 <div className="space-y-3">
-                  {orderBumps.map((bump) => {
-                    const checked = selectedBumps.has(bump.id);
-                    return (
-                      <label
-                        key={bump.id}
-                        className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors ${
-                          checked ? "border-clay-500 bg-clay-50" : "border-graphite-900/10 bg-cream-50 hover:border-graphite-900/20"
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 shrink-0 accent-clay-600"
-                          checked={checked}
-                          onChange={() => toggleBump(bump.id)}
-                        />
-                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-white">
-                          <Image src={bump.image} alt={bump.name} fill sizes="48px" className="object-cover" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-bold text-graphite-950">{bump.name}</p>
-                          <p className="truncate text-xs text-graphite-700/70">{bump.headline}</p>
-                        </div>
-                        <div className="shrink-0 text-right">
-                          {bump.compareAtCents && (
-                            <p className="text-xs text-graphite-700/40 line-through">{formatBRL(bump.compareAtCents)}</p>
-                          )}
-                          <p className="text-sm font-extrabold text-graphite-950">{formatBRL(bump.priceCents)}</p>
-                        </div>
-                      </label>
-                    );
-                  })}
+                  {featuredBumps.map((bump) => (
+                    <BumpRow key={bump.id} bump={bump} checked={selectedBumps.has(bump.id)} onToggle={() => toggleBump(bump.id)} highlight />
+                  ))}
+                </div>
+              </SectionCard>
+            )}
+
+            {regularBumps.length > 0 && (
+              <SectionCard icon={ShoppingBag} step={featuredBumps.length > 0 ? 4 : 3} title="Produtos adicionais" optional>
+                <div className="space-y-3">
+                  {regularBumps.map((bump) => (
+                    <BumpRow key={bump.id} bump={bump} checked={selectedBumps.has(bump.id)} onToggle={() => toggleBump(bump.id)} />
+                  ))}
                 </div>
               </SectionCard>
             )}
@@ -408,6 +393,61 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
         </form>
       </div>
     </main>
+  );
+}
+
+function BumpRow({
+  bump,
+  checked,
+  onToggle,
+  highlight,
+}: {
+  bump: OrderBump;
+  checked: boolean;
+  onToggle: () => void;
+  highlight?: boolean;
+}) {
+  return (
+    <label
+      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors ${
+        checked
+          ? "border-clay-500 bg-clay-50"
+          : highlight
+            ? "border-sage-400 bg-sage-50 hover:border-sage-500"
+            : "border-graphite-900/10 bg-cream-50 hover:border-graphite-900/20"
+      }`}
+    >
+      <input
+        type="checkbox"
+        className="h-4 w-4 shrink-0 accent-clay-600"
+        checked={checked}
+        onChange={onToggle}
+      />
+      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white">
+        {bump.image ? (
+          <Image src={bump.image} alt={bump.name} fill sizes="48px" className="object-cover" />
+        ) : (
+          <FileText className="h-6 w-6 text-sage-600" strokeWidth={1.75} />
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          {highlight && (
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-sage-600 px-1.5 py-0.5 text-[10px] font-bold text-white">
+              <Sparkles className="h-2.5 w-2.5" /> OFERTA
+            </span>
+          )}
+          <p className="truncate text-sm font-bold text-graphite-950">{bump.name}</p>
+        </div>
+        <p className="truncate text-xs text-graphite-700/70">{bump.headline}</p>
+      </div>
+      <div className="shrink-0 text-right">
+        {bump.compareAtCents && (
+          <p className="text-xs text-graphite-700/40 line-through">{formatBRL(bump.compareAtCents)}</p>
+        )}
+        <p className="text-sm font-extrabold text-graphite-950">{formatBRL(bump.priceCents)}</p>
+      </div>
+    </label>
   );
 }
 

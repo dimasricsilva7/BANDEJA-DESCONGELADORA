@@ -101,6 +101,26 @@ async function main() {
   });
 
   await db.product.upsert({
+    where: { slug: "ebook-1000-receitas" },
+    update: {},
+    create: {
+      name: "E-book +1000 Receitas Nutritivas e Saudáveis (PDF)",
+      slug: "ebook-1000-receitas",
+      description: "Mais de 1000 receitas práticas, nutritivas e saudáveis para o seu dia a dia, em PDF digital de acesso imediato.",
+      shortPitch: "Mais de 1000 receitas práticas para o seu dia a dia, direto no seu celular.",
+      priceCents: 990,
+      images: [],
+      type: "ORDER_BUMP",
+      active: true,
+      featured: true,
+      sortOrder: 0,
+      orderBumpEnabled: true,
+      orderBumpPriceCents: 990,
+      orderBumpHeadline: "Adicione por apenas R$ 9,90 um PDF com +1000 receitas nutritivas e saudáveis para o dia a dia.",
+    },
+  });
+
+  await db.product.upsert({
     where: { slug: "kit-cozinha-pratica" },
     update: {},
     create: {
