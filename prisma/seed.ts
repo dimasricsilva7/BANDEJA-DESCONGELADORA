@@ -11,10 +11,10 @@ async function main() {
     const passwordHash = await bcrypt.hash(adminPassword, 12);
     await db.admin.upsert({
       where: { email: adminEmail },
-      update: {},
+      update: { passwordHash },
       create: { email: adminEmail, passwordHash, name: "Administrador" },
     });
-    console.log(`Admin garantido: ${adminEmail}`);
+    console.log(`Admin garantido (senha sincronizada com ADMIN_SEED_PASSWORD): ${adminEmail}`);
   } else {
     console.warn("ADMIN_SEED_EMAIL/ADMIN_SEED_PASSWORD ausentes — nenhum admin criado.");
   }
