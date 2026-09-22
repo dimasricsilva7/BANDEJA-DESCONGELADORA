@@ -465,17 +465,17 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <fieldset className="card-surface p-5 sm:p-6">
-      <legend className="mb-4 flex items-center gap-2.5 px-0">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-graphite-950 text-xs font-bold text-cream-50">
+    <div className="card-surface p-5 sm:p-6">
+      <div className="mb-4 flex items-center gap-2.5">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-graphite-950 text-xs font-bold leading-none text-cream-50">
           {step}
         </span>
-        <Icon className="h-4 w-4 text-sage-600" />
-        <span className="text-sm font-extrabold text-graphite-950">{title}</span>
-        {optional && <span className="text-xs font-normal text-graphite-700/50">(opcional)</span>}
-      </legend>
+        <Icon className="h-4 w-4 shrink-0 text-sage-600" />
+        <span className="text-sm font-extrabold leading-none text-graphite-950">{title}</span>
+        {optional && <span className="text-xs font-normal leading-none text-graphite-700/50">(opcional)</span>}
+      </div>
       <div className="space-y-4">{children}</div>
-    </fieldset>
+    </div>
   );
 }
 
