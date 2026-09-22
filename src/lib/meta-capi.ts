@@ -21,10 +21,34 @@ type CapiEventInput = {
   actionSource?: "website";
 };
 
+type PixelCredential = { pixelId: string; token: string };
+
+/**
+ * Suporta múltiplas contas de anúncio simultaneamente. Cada pixel exige seu
+ * próprio token de Conversions API (o token é emitido por pixel/BM, não é
+ * compartilhável entre contas). Configure a segunda conta com
+ * NEXT_PUBLIC_META_PIXEL_ID_2 / META_CONVERSIONS_API_TOKEN_2, a terceira com
+ * _3, e assim por diante — sem precisar alterar código.
+ */
+function getConfiguredPixels(): PixelCredential[] {
+  const pairs: PixelCredential[] = [];
+
+  const primaryPixel = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const primaryToken = process.env.META_CONVERSIONS_API_TOKEN;
+  if (primaryPixel && primaryToken) pairs.push({ pixelId: primaryPixel, token: primaryToken });
+
+  for (let i = 2; i <= 5; i++) {
+    const pixelId = process.env[`NEXT_PUBLIC_META_PIXEL_ID_${i}`];
+    const token = process.env[`META_CONVERSIONS_API_TOKEN_${i}`];
+    if (pixelId && token) pairs.push({ pixelId, token });
+  }
+
+  return pairs;
+}
+
 export async function sendMetaCapiEvent(input: CapiEventInput): Promise<void> {
-  const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
-  const token = process.env.META_CONVERSIONS_API_TOKEN;
-  if (!pixelId || !token) return; // tracking is best-effort, never blocks the purchase flow
+  const pixels = getConfiguredPixels();
+  if (pixels.length === 0) return; // tracking is best-effort, never blocks the purchase flow
 
   const user_data: Record<string, string> = {};
   if (input.userData.email) user_data.em = sha256(input.userData.email);
@@ -49,20 +73,28 @@ export async function sendMetaCapiEvent(input: CapiEventInput): Promise<void> {
     ],
   };
 
-  try {
-    const res = await fetch(
-      `https://graph.facebook.com/${GRAPH_VERSION}/${pixelId}/events?access_token=${token}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+  // Cada pixel recebe a chamada de forma independente (endpoint e token
+  // próprios). O mesmo event_id é enviado para todos — isso é seguro: a
+  // deduplicação do Meta é por conta/pixel, então usar o mesmo ID em contas
+  // diferentes não causa contagem duplicada em nenhuma delas.
+  await Promise.all(
+    pixels.map(async ({ pixelId, token }) => {
+      try {
+        const res = await fetch(
+          `https://graph.facebook.com/${GRAPH_VERSION}/${pixelId}/events?access_token=${token}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          }
+        );
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          console.error(`[meta-capi] falha ao enviar evento (pixel ${pixelId})`, input.eventName, res.status, text);
+        }
+      } catch (err) {
+        console.error(`[meta-capi] erro de rede (pixel ${pixelId})`, err);
       }
-    );
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.error("[meta-capi] falha ao enviar evento", input.eventName, res.status, text);
-    }
-  } catch (err) {
-    console.error("[meta-capi] erro de rede", err);
-  }
+    })
+  );
 }
