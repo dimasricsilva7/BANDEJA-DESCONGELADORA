@@ -3,19 +3,30 @@ import Image from "next/image";
 export function ProblemSection() {
   return (
     <section className="section bg-cream-50">
-      <div className="container-app flex flex-col items-center text-center">
-        <p className="eyebrow mb-4">O problema</p>
-        <h2 className="max-w-lg text-2xl font-extrabold tracking-tight text-graphite-950 sm:text-3xl">
-          Seu jantar não deveria começar horas antes.
-        </h2>
+      <div className="container-app grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div>
+          <p className="eyebrow mb-4">O problema</p>
+          <h2 className="text-2xl font-extrabold tracking-tight text-graphite-950 sm:text-3xl">
+            Seu jantar não deveria começar horas antes.
+          </h2>
+          <div className="mt-6 space-y-4 text-graphite-700">
+            <p>Você ainda precisa esperar horas para descongelar a carne?</p>
+            <p>
+              Alimento esquecido no congelador, pia ocupada com água escorrendo, rotina corrida e o
+              planejamento da refeição que nunca sai como esperado — situações comuns que roubam
+              tempo do seu dia.
+            </p>
+            <p>Do congelador para o preparo, com muito mais praticidade.</p>
+          </div>
+        </div>
 
-        <div className="mt-8 w-full max-w-md overflow-hidden rounded-xl2 shadow-card">
+        <div className="w-full overflow-hidden rounded-xl2 shadow-card">
           <Image
             src="/images/produto-real-problema-completa.jpg"
             alt="Descongele sua carne em minutos, sem complicação — comparação antes e depois do uso do descongelador"
             width={1145}
             height={1374}
-            sizes="(max-width: 768px) 90vw, 420px"
+            sizes="(max-width: 768px) 90vw, 480px"
             className="h-auto w-full"
           />
         </div>
