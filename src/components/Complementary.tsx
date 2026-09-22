@@ -49,7 +49,7 @@ export default function Complementary({ products }: { products: ComplementaryPro
                   productId={product.id}
                   productName={product.name}
                   priceCents={product.priceCents}
-                  className="btn-secondary mt-4"
+                  className="btn-primary mt-4 w-full"
                 >
                   Adicionar ao carrinho
                 </AddToCartButton>
