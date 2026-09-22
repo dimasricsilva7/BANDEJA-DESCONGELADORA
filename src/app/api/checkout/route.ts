@@ -202,7 +202,15 @@ export async function POST(req: NextRequest) {
       eventName: "InitiateCheckout",
       eventId: `initiate_${order.id}`,
       eventSourceUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/checkout`,
-      userData: { email: customer.email, phone: customer.phone, firstName: customer.name.split(" ")[0] },
+      userData: {
+        email: customer.email,
+        phone: customer.phone,
+        firstName: customer.name.split(" ")[0],
+        ip: getClientIp(req.headers),
+        userAgent: req.headers.get("user-agent") ?? undefined,
+        fbc: req.cookies.get("_fbc")?.value,
+        fbp: req.cookies.get("_fbp")?.value,
+      },
       customData: { value: order.totalCents / 100, currency: "BRL", content_ids: [order.id] },
     }).catch(() => {});
   } catch (err) {

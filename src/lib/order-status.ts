@@ -61,6 +61,16 @@ export async function applyTransactionSnapshot(orderId: string, tx: BravopayTran
     });
 
     if (!wasAlreadyPaid) {
+      // Compras confirmadas fora da visita original (webhook atrasado, reverify
+      // manual, polling que só rodou depois) não têm cookies de navegador
+      // disponíveis aqui. Reconstruímos o fbc a partir do fbclid salvo no
+      // pedido (mesmo formato que o Pixel usa) para que a compra ainda seja
+      // atribuída à campanha/anúncio corretos no Meta Ads, em vez de cair
+      // como "compra sem origem".
+      const fbc = order.fbclid
+        ? `fb.1.${order.createdAt.getTime()}.${order.fbclid}`
+        : undefined;
+
       await sendMetaCapiEvent({
         eventName: "Purchase",
         eventId: order.metaEventId ?? `purchase_${order.id}`,
@@ -69,6 +79,7 @@ export async function applyTransactionSnapshot(orderId: string, tx: BravopayTran
           email: order.customer.email,
           phone: order.customer.phone,
           firstName: order.customer.name.split(" ")[0],
+          fbc,
         },
         customData: {
           value: order.totalCents / 100,
