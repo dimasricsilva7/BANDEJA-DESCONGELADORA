@@ -27,7 +27,7 @@ export const metadata: Metadata = {
       "Mais praticidade na cozinha: descongele alimentos sem esperar horas. Frete grátis e pagamento via PIX.",
     url: siteUrl,
     siteName: "Cozinha Prática",
-    images: [{ url: "/images/produto-real-hero.jpg", width: 1024, height: 1024 }],
+    images: [{ url: "/images/produto-real-hero-v2.jpg", width: 1024, height: 1024 }],
     locale: "pt_BR",
     type: "website",
   },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Bandeja de Descongelamento Rápido com Tampa",
     description: "Mais praticidade na cozinha, com frete grátis e pagamento via PIX.",
-    images: ["/images/produto-real-hero.jpg"],
+    images: ["/images/produto-real-hero-v2.jpg"],
   },
   robots: { index: true, follow: true },
 };

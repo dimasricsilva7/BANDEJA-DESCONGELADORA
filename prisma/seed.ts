@@ -31,7 +31,7 @@ async function main() {
       compareAtCents: 28198,
       bravopayProductId: process.env.BRAVOPAY_PRODUCT_ID ?? null,
       images: [
-        "/images/produto-real-hero.jpg",
+        "/images/produto-real-hero-v2.jpg",
         "/images/produto-real-principal.jpg",
         "/images/produto-real-detalhe-1.jpg",
         "/images/produto-real-detalhe-2.jpg",

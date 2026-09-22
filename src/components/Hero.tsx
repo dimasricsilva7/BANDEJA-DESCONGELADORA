@@ -64,9 +64,9 @@ export default function Hero({
           <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-xl2 bg-white shadow-lift ring-1 ring-graphite-950/[0.05] sm:max-w-lg">
             <Image
               src={heroImage}
-              alt="Descongelador elétrico com tampa sobre bancada de cozinha"
-              width={1145}
-              height={370}
+              alt="Descongele mais rápido — descongelador elétrico com tampa, ideal para carnes, peixes, frango e frutos do mar"
+              width={1159}
+              height={1358}
               priority
               sizes="(max-width: 768px) 90vw, 520px"
               className="h-auto w-full"
