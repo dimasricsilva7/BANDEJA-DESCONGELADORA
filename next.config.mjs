@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    formats: ["image/avif", "image/webp"],
+    // A cota gratuita de Image Optimization da Vercel é compartilhada entre
+    // todos os projetos do time e já está esgotada por outros projetos —
+    // isso faz o otimizador retornar 402 em produção. Desativamos aqui para
+    // as imagens continuarem funcionando; reativar exige plano Pro ou menor
+    // uso nos outros projetos do time.
+    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
