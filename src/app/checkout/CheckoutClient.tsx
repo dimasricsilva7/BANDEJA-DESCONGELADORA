@@ -216,7 +216,7 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
           <div className="overflow-hidden rounded-xl2 bg-white shadow-lift ring-1 ring-graphite-950/[0.05]">
             <div className="flex items-center gap-3 border-b border-graphite-900/10 bg-cream-50/70 px-6 py-4">
               <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-cream-100">
-                <Image src={product.image} alt={product.name} fill sizes="44px" className="object-cover" />
+                <Image src={product.image} alt={product.name} fill sizes="44px" className="object-contain" />
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold text-graphite-950">{product.name}</p>
@@ -344,7 +344,7 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
               <div className="p-5">
                 <div className="flex gap-3">
                   <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-cream-100">
-                    <Image src={product.image} alt={product.name} fill sizes="80px" className="object-cover" />
+                    <Image src={product.image} alt={product.name} fill sizes="80px" className="object-contain" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-bold text-graphite-950">{product.name}</p>
@@ -425,7 +425,7 @@ function BumpRow({
       />
       <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white">
         {bump.image ? (
-          <Image src={bump.image} alt={bump.name} fill sizes="48px" className="object-cover" />
+          <Image src={bump.image} alt={bump.name} fill sizes="48px" className="object-contain" />
         ) : (
           <FileText className="h-6 w-6 text-sage-600" strokeWidth={1.75} />
         )}

@@ -27,13 +27,13 @@ export default function Complementary({ products }: { products: ComplementaryPro
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
             <div key={product.id} className="flex flex-col overflow-hidden rounded-xl2 bg-white shadow-card">
-              <div className="relative aspect-[4/3] w-full bg-cream-100">
+              <div className="relative aspect-[4/5] w-full bg-cream-100">
                 <Image
                   src={product.images[0] ?? "/images/kit-complementar.jpg"}
                   alt={product.name}
                   fill
                   sizes="(max-width: 768px) 90vw, 340px"
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
               <div className="flex flex-1 flex-col p-5">

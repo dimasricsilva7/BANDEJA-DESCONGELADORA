@@ -113,7 +113,7 @@ export default async function OrderSuccessPage({ params }: { params: { orderId: 
                     alt={item.name}
                     fill
                     sizes="64px"
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </div>
                 <div className="flex-1">

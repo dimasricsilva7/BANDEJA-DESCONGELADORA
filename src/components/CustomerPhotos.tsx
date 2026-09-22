@@ -60,8 +60,8 @@ export default function CustomerPhotos({ photos }: { photos: CustomerPhoto[] }) 
             <X className="h-5 w-5" />
           </button>
           <div className="max-w-sm" onClick={(e) => e.stopPropagation()}>
-            <div className="relative aspect-square w-full overflow-hidden rounded-xl2">
-              <Image src={active.photoUrl} alt={`Foto enviada por ${active.customerName}`} fill sizes="400px" className="object-cover" />
+            <div className="relative aspect-square w-full overflow-hidden rounded-xl2 bg-graphite-900">
+              <Image src={active.photoUrl} alt={`Foto enviada por ${active.customerName}`} fill sizes="400px" className="object-contain" />
             </div>
             <div className="mt-3 text-center text-cream-50">
               <p className="font-bold">{active.customerName}</p>

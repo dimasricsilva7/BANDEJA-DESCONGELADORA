@@ -98,7 +98,7 @@ export default function UpsellClient({ parentOrderId, product }: { parentOrderId
           {!pix && (
             <>
               <div className="relative mx-auto mt-5 aspect-square w-40 overflow-hidden rounded-xl bg-cream-100">
-                <Image src={product.image} alt={product.name} fill className="object-cover" />
+                <Image src={product.image} alt={product.name} fill className="object-contain" />
               </div>
               <p className="mt-4 font-medium text-graphite-950">{product.name}</p>
               <div className="mt-2 flex items-baseline justify-center gap-2">
