@@ -9,6 +9,7 @@ import { Check, Copy, Loader2, ShieldCheck, Lock, User, MapPin, ShoppingBag, Fil
 import { formatBRL } from "@/lib/pricing";
 import { trackPixel } from "@/components/MetaPixel";
 import { readAttribution } from "@/components/TrackingCapture";
+import OfferTimer from "@/components/OfferTimer";
 
 type OrderBump = {
   id: string;
@@ -285,6 +286,8 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
           <span>/</span>
           <span className="font-medium text-graphite-950">Finalizar pedido</span>
         </div>
+
+        <OfferTimer />
 
         <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[1fr_380px] lg:items-start">
           <div className="space-y-5">
