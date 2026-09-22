@@ -116,6 +116,7 @@ model Order {
   idempotencyKey    String      @unique
 
   paidAt            DateTime?
+  pixelPurchaseFiredAt DateTime?
   lastCheckedAt     DateTime?
   isUpsellOrder     Boolean     @default(false)
   parentOrderId     String?

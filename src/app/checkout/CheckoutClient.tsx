@@ -183,11 +183,13 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
   }, [pix?.orderId, pix?.status]);
 
   useEffect(() => {
+    // O evento Purchase do Pixel é disparado na página de obrigado
+    // (/pedido/sucesso), não aqui — assim a conversão é registrada mesmo que
+    // o cliente feche o checkout e volte depois pelo link do pedido.
     if (pix?.status === "PAID") {
-      trackPixel("Purchase", { value: pix.totalCents / 100, currency: "BRL" }, purchaseEventId);
       router.push(`/upsell/${pix.orderId}`);
     }
-  }, [pix?.status, pix?.orderId, pix?.totalCents, purchaseEventId, router]);
+  }, [pix?.status, pix?.orderId, router]);
 
   function copyPix() {
     if (!pix?.pixCopyPaste) return;
