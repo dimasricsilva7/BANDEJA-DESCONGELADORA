@@ -59,6 +59,12 @@ export async function sendMetaCapiEvent(input: CapiEventInput): Promise<void> {
   if (input.userData.fbc) user_data.fbc = input.userData.fbc;
   if (input.userData.fbp) user_data.fbp = input.userData.fbp;
 
+  // META_TEST_EVENT_CODE (opcional): quando definido, os eventos passam a
+  // aparecer na aba "Eventos de teste" do Gerenciador de Eventos. Sem essa
+  // variável (comportamento padrão em produção), os eventos de servidor
+  // continuam sendo enviados normalmente, só não ficam visíveis nessa aba.
+  const testEventCode = process.env.META_TEST_EVENT_CODE;
+
   const body = {
     data: [
       {
@@ -71,6 +77,7 @@ export async function sendMetaCapiEvent(input: CapiEventInput): Promise<void> {
         custom_data: input.customData ?? {},
       },
     ],
+    ...(testEventCode ? { test_event_code: testEventCode } : {}),
   };
 
   // Cada pixel recebe a chamada de forma independente (endpoint e token
