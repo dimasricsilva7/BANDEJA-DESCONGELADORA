@@ -21,8 +21,8 @@ export function ProblemSection() {
         </div>
         <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl2 bg-cream-100 shadow-card">
           <Image
-            src="/images/lifestyle-cozinha.png"
-            alt="Cozinha organizada e prática"
+            src="/images/produto-real-problema.jpg"
+            alt="Descongelador em uma cozinha real, pronto para uso"
             fill
             sizes="(max-width: 768px) 90vw, 480px"
             className="object-cover"

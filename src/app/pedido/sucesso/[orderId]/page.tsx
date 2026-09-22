@@ -109,7 +109,7 @@ export default async function OrderSuccessPage({ params }: { params: { orderId: 
               <div key={item.id} className="flex items-center gap-4 py-4">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-cream-100">
                   <Image
-                    src={item.product?.images?.[0] ?? "/images/produto-hero.png"}
+                    src={item.product?.images?.[0] ?? "/images/produto-hero.jpg"}
                     alt={item.name}
                     fill
                     sizes="64px"

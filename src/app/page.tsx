@@ -91,7 +91,7 @@ export default async function HomePage() {
       <Hero
         priceCents={priceCents}
         compareAtCents={compareAtCents}
-        heroImage={mainProduct.images[0] ?? "/images/produto-hero.png"}
+        heroImage={mainProduct.images[0] ?? "/images/produto-hero.jpg"}
         reviewStats={reviewStats}
       />
       <TrustSection />

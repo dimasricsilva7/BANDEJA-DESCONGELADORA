@@ -1,9 +1,9 @@
 import Image from "next/image";
 
 const images = [
-  { src: "/images/produto-hero.png", alt: "Bandeja de Descongelamento Rápido com Tampa, vista geral" },
-  { src: "/images/produto-detalhe.png", alt: "Detalhe da bandeja com a tampa ao lado" },
-  { src: "/images/lifestyle-cozinha.png", alt: "Bandeja utilizada em uma cozinha real" },
+  { src: "/images/produto-real-principal.jpg", alt: "Descongelador elétrico com tampa, vista geral na cozinha" },
+  { src: "/images/produto-real-detalhe-1.jpg", alt: "Descongelador em uso com salmão" },
+  { src: "/images/produto-real-detalhe-2.jpg", alt: "Descongelador em uso com peça de carne" },
 ];
 
 export default function ProductGallery() {

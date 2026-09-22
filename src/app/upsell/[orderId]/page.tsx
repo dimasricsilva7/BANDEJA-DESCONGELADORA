@@ -23,7 +23,7 @@ export default async function UpsellPage({ params }: { params: { orderId: string
       product={{
         id: upsellProduct.id,
         name: upsellProduct.name,
-        image: upsellProduct.images[0] ?? "/images/kit-complementar.png",
+        image: upsellProduct.images[0] ?? "/images/kit-complementar.jpg",
         compareAtCents: upsellProduct.compareAtCents ?? upsellProduct.priceCents,
         priceCents: upsellProduct.upsellPriceCents ?? upsellProduct.priceCents,
         headline: upsellProduct.upsellHeadline ?? "Oferta especial só para quem acabou de comprar.",

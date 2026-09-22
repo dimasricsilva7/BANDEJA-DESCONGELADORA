@@ -29,7 +29,7 @@ export default function Complementary({ products }: { products: ComplementaryPro
             <div key={product.id} className="flex flex-col overflow-hidden rounded-xl2 bg-white shadow-card">
               <div className="relative aspect-[4/3] w-full bg-cream-100">
                 <Image
-                  src={product.images[0] ?? "/images/kit-complementar.png"}
+                  src={product.images[0] ?? "/images/kit-complementar.jpg"}
                   alt={product.name}
                   fill
                   sizes="(max-width: 768px) 90vw, 340px"
