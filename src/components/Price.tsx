@@ -20,7 +20,7 @@ export default function Price({
       {compareAtCents && compareAtCents > priceCents && (
         <span className="text-graphite-900/40 line-through text-base">{formatBRL(compareAtCents)}</span>
       )}
-      <span className={`font-serif font-semibold text-graphite-900 ${sizes[size]}`}>
+      <span className={`font-extrabold tracking-tight text-graphite-950 ${sizes[size]}`}>
         {formatBRL(priceCents)}
       </span>
     </div>

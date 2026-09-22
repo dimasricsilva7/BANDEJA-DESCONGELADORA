@@ -20,6 +20,7 @@ type Product = {
   orderBumpHeadline: string | null;
   upsellEnabled: boolean;
   upsellPriceCents: number | null;
+  shortPitch: string | null;
 };
 
 export default function ProductsClient() {
@@ -52,6 +53,7 @@ export default function ProductsClient() {
           orderBumpHeadline: product.orderBumpHeadline,
           upsellEnabled: product.upsellEnabled,
           upsellPriceCents: product.upsellPriceCents,
+          shortPitch: product.shortPitch,
         }),
       });
       load();
@@ -84,6 +86,15 @@ export default function ProductsClient() {
                 <span className="whitespace-nowrap rounded-full bg-cream-100 px-2.5 py-1 text-xs text-graphite-800/60">{product.type}</span>
               </div>
 
+              {product.type === "COMPLEMENTARY" && (
+                <input
+                  className="w-full rounded-lg border border-graphite-900/15 px-3 py-1.5 text-xs"
+                  placeholder="Frase curta de benefício (aparece na seção 'Complete sua cozinha')"
+                  value={product.shortPitch ?? ""}
+                  onChange={(e) => update(product.id, { shortPitch: e.target.value })}
+                />
+              )}
+
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <PriceInput label="Preço (centavos)" value={product.priceCents} onChange={(v) => update(product.id, { priceCents: v })} />
                 <PriceInput label="Preço antigo" value={product.compareAtCents ?? 0} onChange={(v) => update(product.id, { compareAtCents: v || null })} />
@@ -98,7 +109,7 @@ export default function ProductsClient() {
               </div>
 
               {product.type === "COMPLEMENTARY" && (
-                <div className="grid grid-cols-2 gap-3 rounded-lg bg-amber-600/5 p-3 sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 rounded-lg bg-clay-500/5 p-3 sm:grid-cols-3">
                   <label className="flex items-center gap-2 text-xs text-graphite-800/70">
                     <input type="checkbox" checked={product.orderBumpEnabled} onChange={(e) => update(product.id, { orderBumpEnabled: e.target.checked })} />
                     Order bump ativo
@@ -114,7 +125,7 @@ export default function ProductsClient() {
               )}
 
               {product.type === "UPSELL" && (
-                <div className="grid grid-cols-2 gap-3 rounded-lg bg-amber-600/5 p-3">
+                <div className="grid grid-cols-2 gap-3 rounded-lg bg-clay-500/5 p-3">
                   <label className="flex items-center gap-2 text-xs text-graphite-800/70">
                     <input type="checkbox" checked={product.upsellEnabled} onChange={(e) => update(product.id, { upsellEnabled: e.target.checked })} />
                     Upsell ativo

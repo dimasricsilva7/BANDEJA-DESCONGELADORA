@@ -13,8 +13,8 @@ const PRESETS = [
   { value: "last_month", label: "Mês passado" },
 ];
 
-const AMBER = "#96601F";
-const GRAPHITE = "#3C3A2E";
+const CLAY = "#AB5C2F";
+const GRAPHITE = "#3C382F";
 
 type Stats = {
   grossCents: number;
@@ -83,7 +83,7 @@ export default function DashboardClient() {
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d) => d.slice(5)} />
                   <YAxis tick={{ fontSize: 11 }} />
                   <Tooltip formatter={(v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} />
-                  <Line type="monotone" dataKey="revenue" stroke={AMBER} strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="revenue" stroke={CLAY} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -107,7 +107,7 @@ export default function DashboardClient() {
                   <XAxis type="number" tick={{ fontSize: 11 }} />
                   <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 11 }} />
                   <Tooltip formatter={(v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} />
-                  <Bar dataKey="value" fill={AMBER} radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="value" fill={CLAY} radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -134,7 +134,7 @@ function Card({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl2 bg-white p-5 shadow-card">
       <p className="text-xs text-graphite-800/60">{label}</p>
-      <p className="mt-1.5 font-serif text-xl text-graphite-950">{value}</p>
+      <p className="mt-1.5 text-xl font-extrabold text-graphite-950">{value}</p>
     </div>
   );
 }

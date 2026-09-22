@@ -20,6 +20,7 @@ const createSchema = z.object({
   images: z.array(z.string()).default([]),
   type: z.enum(["MAIN", "COMPLEMENTARY", "ORDER_BUMP", "UPSELL"]),
   bravopayProductId: z.string().optional().nullable(),
+  shortPitch: z.string().optional().nullable(),
 });
 
 export async function POST(req: NextRequest) {

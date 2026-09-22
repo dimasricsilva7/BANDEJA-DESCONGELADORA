@@ -60,7 +60,7 @@ export default async function OrderSuccessPage({ params }: { params: { orderId: 
                 <CheckCircle2 className="h-9 w-9 text-emerald-600" strokeWidth={1.75} />
               </div>
               <p className="eyebrow mt-5">Pagamento aprovado</p>
-              <h1 className="mt-2 font-serif text-3xl text-graphite-950 sm:text-4xl">
+              <h1 className="mt-2 text-3xl font-extrabold text-graphite-950 sm:text-4xl">
                 Obrigado, {firstName}!
               </h1>
               <p className="mx-auto mt-3 max-w-md text-graphite-800/75">
@@ -71,7 +71,7 @@ export default async function OrderSuccessPage({ params }: { params: { orderId: 
           ) : (
             <>
               <p className="eyebrow mt-2">Pedido {order.displayId}</p>
-              <h1 className="mt-2 font-serif text-2xl text-graphite-950">
+              <h1 className="mt-2 text-2xl font-extrabold text-graphite-950">
                 Estamos confirmando seu pagamento
               </h1>
               <p className="mx-auto mt-3 max-w-md text-graphite-800/75">
@@ -89,7 +89,7 @@ export default async function OrderSuccessPage({ params }: { params: { orderId: 
               <p className="text-xs font-semibold uppercase tracking-wide text-graphite-800/50">
                 Número do pedido
               </p>
-              <p className="font-serif text-lg text-graphite-950">{order.displayId}</p>
+              <p className="text-lg font-extrabold text-graphite-950">{order.displayId}</p>
             </div>
             <div className="text-right">
               <p className="text-xs font-semibold uppercase tracking-wide text-graphite-800/50">Status</p>

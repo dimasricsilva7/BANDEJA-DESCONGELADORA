@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/pedidos", label: "Pedidos" },
   { href: "/admin/produtos", label: "Produtos" },
+  { href: "/admin/avaliacoes", label: "Avaliações" },
   { href: "/admin/carrinhos-abandonados", label: "Carrinhos abandonados" },
   { href: "/admin/configuracoes", label: "Configurações" },
 ];
@@ -22,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <header className="border-b border-graphite-900/10 bg-white">
         <div className="container-app flex items-center justify-between py-4">
           <div>
-            <p className="font-serif text-lg text-graphite-950">Painel administrativo</p>
+            <p className="text-lg font-extrabold text-graphite-950">Painel administrativo</p>
             <p className="text-xs text-graphite-800/50">{admin.email}</p>
           </div>
           <LogoutButton />

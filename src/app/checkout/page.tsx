@@ -25,6 +25,7 @@ export default async function CheckoutPage() {
           slug: mainProduct.slug,
           name: mainProduct.name,
           priceCents: mainProduct.priceCents,
+          compareAtCents: mainProduct.compareAtCents ?? undefined,
           image: mainProduct.images[0] ?? "/images/produto-hero.png",
         }}
         orderBumps={bumps.map((b) => ({
@@ -32,6 +33,8 @@ export default async function CheckoutPage() {
           slug: b.slug,
           name: b.name,
           priceCents: b.orderBumpPriceCents ?? b.priceCents,
+          compareAtCents: b.priceCents !== (b.orderBumpPriceCents ?? b.priceCents) ? b.priceCents : undefined,
+          image: b.images[0] ?? "/images/kit-complementar.png",
           headline: b.orderBumpHeadline ?? `Adicionar ${b.name}`,
         }))}
       />

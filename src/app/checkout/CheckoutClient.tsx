@@ -2,15 +2,24 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import QRCode from "qrcode";
-import { Check, Copy, Loader2, ShieldCheck } from "lucide-react";
+import { Check, Copy, Loader2, ShieldCheck, Lock, User, MapPin, ShoppingBag } from "lucide-react";
 import { formatBRL } from "@/lib/pricing";
 import { trackPixel } from "@/components/MetaPixel";
 import { readAttribution } from "@/components/TrackingCapture";
 
-type OrderBump = { id: string; slug: string; name: string; priceCents: number; headline: string };
-type Product = { slug: string; name: string; priceCents: number; image: string };
+type OrderBump = {
+  id: string;
+  slug: string;
+  name: string;
+  priceCents: number;
+  compareAtCents?: number;
+  image: string;
+  headline: string;
+};
+type Product = { slug: string; name: string; priceCents: number; compareAtCents?: number; image: string };
 
 const POLL_SCHEDULE = [0, 3000, 6000, 10000, 15000, 20000, 30000, 45000, 60000];
 const POLL_STEADY_STATE = 60000;
@@ -201,157 +210,232 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
 
   if (pix?.pixCopyPaste) {
     return (
-      <main className="min-h-screen bg-cream-50 py-10">
+      <main className="min-h-screen bg-cream-50 py-8 sm:py-14">
         <div className="container-app max-w-md">
-          <div className="rounded-xl2 bg-white p-6 shadow-soft text-center">
-            <h1 className="font-serif text-xl text-graphite-950">Pague com PIX para confirmar seu pedido</h1>
-            <p className="mt-1 text-sm text-graphite-800/70">Pedido {pix.orderId}</p>
+          <div className="overflow-hidden rounded-xl2 bg-white shadow-lift ring-1 ring-graphite-950/[0.05]">
+            <div className="flex items-center gap-3 border-b border-graphite-900/10 bg-cream-50/70 px-6 py-4">
+              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-cream-100">
+                <Image src={product.image} alt={product.name} fill sizes="44px" className="object-cover" />
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-graphite-950">{product.name}</p>
+                <p className="text-xs text-graphite-700/60">Pedido {pix.orderId}</p>
+              </div>
+            </div>
 
-            {pix.status === "PENDING" || pix.status === "PIX_GENERATED" ? (
-              <>
-                {qrDataUrl && (
-                  <Image src={qrDataUrl} alt="QR Code PIX" width={220} height={220} className="mx-auto mt-6 rounded-lg" unoptimized />
-                )}
-                <p className="mt-4 text-2xl font-semibold font-serif">{formatBRL(pix.totalCents)}</p>
+            <div className="p-6 text-center sm:p-8">
+              {pix.status === "PENDING" || pix.status === "PIX_GENERATED" ? (
+                <>
+                  <h1 className="text-lg font-extrabold text-graphite-950">Pague com PIX para confirmar</h1>
+                  <p className="mt-1 text-sm text-graphite-700/75">Escaneie o QR Code ou copie o código abaixo</p>
 
-                {secondsLeft !== null && (
-                  <p className="mt-1 text-xs text-graphite-800/60">
-                    {secondsLeft > 0
-                      ? `Expira em ${Math.floor(secondsLeft / 60)}m ${secondsLeft % 60}s`
-                      : "PIX expirado — gere um novo pedido"}
-                  </p>
-                )}
+                  {qrDataUrl && (
+                    <div className="mx-auto mt-5 w-fit rounded-xl2 bg-white p-3 ring-1 ring-graphite-950/[0.08]">
+                      <Image src={qrDataUrl} alt="QR Code PIX" width={220} height={220} unoptimized />
+                    </div>
+                  )}
+                  <p className="mt-5 text-3xl font-extrabold tracking-tight text-graphite-950">{formatBRL(pix.totalCents)}</p>
 
-                <button onClick={copyPix} className="btn-primary mt-5 w-full">
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  {copied ? "Código copiado!" : "COPIAR CÓDIGO PIX"}
-                </button>
+                  {secondsLeft !== null && (
+                    <p className="mt-1 text-xs font-medium text-graphite-700/60">
+                      {secondsLeft > 0
+                        ? `Expira em ${Math.floor(secondsLeft / 60)}m ${secondsLeft % 60}s`
+                        : "PIX expirado — gere um novo pedido"}
+                    </p>
+                  )}
 
-                <div className="mt-5 flex items-center justify-center gap-2 text-sm text-graphite-800/70">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Aguardando confirmação do pagamento...
-                </div>
+                  <button onClick={copyPix} className="btn-primary mt-6 w-full">
+                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    {copied ? "Código copiado!" : "COPIAR CÓDIGO PIX"}
+                  </button>
 
-                <ol className="mt-6 space-y-1.5 text-left text-xs text-graphite-800/60">
-                  <li>1. Abra o app do seu banco</li>
-                  <li>2. Escolha pagar via PIX com QR Code ou copia e cola</li>
-                  <li>3. Confirme o pagamento — a confirmação aqui é automática</li>
-                </ol>
-              </>
-            ) : (
-              <p className="mt-6 text-graphite-800/80">
-                Este pedido não está mais disponível para pagamento (status: {pix.status}).
-              </p>
-            )}
+                  <div className="mt-5 flex items-center justify-center gap-2 text-sm text-graphite-700/75">
+                    <Loader2 className="h-4 w-4 animate-spin text-sage-600" />
+                    Aguardando confirmação do pagamento...
+                  </div>
+
+                  <ol className="mt-7 space-y-2 rounded-xl2 bg-cream-50 p-4 text-left text-xs text-graphite-700/80">
+                    <li className="flex gap-2"><span className="font-bold text-clay-600">1.</span> Abra o app do seu banco</li>
+                    <li className="flex gap-2"><span className="font-bold text-clay-600">2.</span> Escolha pagar via PIX com QR Code ou copia e cola</li>
+                    <li className="flex gap-2"><span className="font-bold text-clay-600">3.</span> Confirme o pagamento — a aprovação aqui é automática</li>
+                  </ol>
+                </>
+              ) : (
+                <p className="text-graphite-700/80">
+                  Este pedido não está mais disponível para pagamento (status: {pix.status}).
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </main>
     );
   }
 
+  const selectedBumpList = orderBumps.filter((b) => selectedBumps.has(b.id));
+
   return (
-    <main className="min-h-screen bg-cream-50 py-10">
-      <div className="container-app grid gap-8 lg:grid-cols-[1fr_360px]">
-        <form onSubmit={handleSubmit} className="space-y-8 rounded-xl2 bg-white p-6 shadow-soft sm:p-8">
-          <div>
-            <h1 className="font-serif text-2xl text-graphite-950">Finalizar pedido</h1>
-            <p className="mt-1 text-sm text-graphite-800/70">Preencha seus dados para gerar o PIX.</p>
-          </div>
+    <main className="min-h-screen bg-cream-50 py-6 sm:py-10">
+      <div className="container-app max-w-5xl">
+        <div className="mb-6 flex items-center gap-2 text-sm text-graphite-700/70">
+          <Link href="/" className="hover:text-graphite-950">Loja</Link>
+          <span>/</span>
+          <span className="font-medium text-graphite-950">Finalizar pedido</span>
+        </div>
 
-          <fieldset className="space-y-4">
-            <legend className="mb-1 text-sm font-semibold text-graphite-900">Seus dados</legend>
-            <Input label="Nome completo" value={form.name} onChange={(v) => updateField("name", v)} required />
-            <div className="grid grid-cols-2 gap-3">
-              <Input label="CPF" value={form.cpf} onChange={(v) => updateField("cpf", v)} required placeholder="000.000.000-00" />
-              <Input label="Telefone" value={form.phone} onChange={(v) => updateField("phone", v)} required placeholder="(00) 00000-0000" />
-            </div>
-            <Input label="E-mail" type="email" value={form.email} onChange={(v) => updateField("email", v)} required />
-          </fieldset>
-
-          <fieldset className="space-y-4">
-            <legend className="mb-1 text-sm font-semibold text-graphite-900">Endereço de entrega</legend>
-            <Input label="CEP" value={form.zip} onChange={(v) => updateField("zip", v)} onBlur={handleCepBlur} required placeholder="00000-000" />
-            <div className="grid grid-cols-[1fr_120px] gap-3">
-              <Input label="Endereço" value={form.address} onChange={(v) => updateField("address", v)} required />
-              <Input label="Número" value={form.number} onChange={(v) => updateField("number", v)} required />
-            </div>
-            <Input label="Complemento (opcional)" value={form.complement} onChange={(v) => updateField("complement", v)} />
-            <Input label="Bairro" value={form.neighborhood} onChange={(v) => updateField("neighborhood", v)} required />
-            <div className="grid grid-cols-[1fr_90px] gap-3">
-              <Input label="Cidade" value={form.city} onChange={(v) => updateField("city", v)} required />
-              <Input label="UF" value={form.state} onChange={(v) => updateField("state", v.toUpperCase())} required maxLength={2} />
-            </div>
-          </fieldset>
-
-          {orderBumps.length > 0 && (
-            <fieldset className="space-y-3">
-              <legend className="mb-1 text-sm font-semibold text-graphite-900">Aproveite e leve também</legend>
-              {orderBumps.map((bump) => (
-                <label
-                  key={bump.id}
-                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-amber-600/30 bg-amber-600/5 p-4"
-                >
-                  <input
-                    type="checkbox"
-                    className="mt-0.5 h-4 w-4 accent-amber-700"
-                    checked={selectedBumps.has(bump.id)}
-                    onChange={() => toggleBump(bump.id)}
-                  />
-                  <span className="text-sm text-graphite-800/90">
-                    {bump.headline}{" "}
-                    <span className="font-semibold text-graphite-950">{formatBRL(bump.priceCents)}</span>
-                  </span>
-                </label>
-              ))}
-            </fieldset>
-          )}
-
-          {error && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-
-          <button type="submit" disabled={submitting} className="btn-primary w-full">
-            {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {submitting ? "Gerando PIX..." : "GERAR PIX"}
-          </button>
-
-          <p className="flex items-center justify-center gap-2 text-xs text-graphite-800/60">
-            <ShieldCheck className="h-4 w-4 text-amber-700" /> Pagamento processado com segurança
-          </p>
-        </form>
-
-        <aside className="h-fit rounded-xl2 bg-white p-6 shadow-soft">
-          <h2 className="font-serif text-lg text-graphite-950">Resumo do pedido</h2>
-          <div className="mt-4 flex gap-3">
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-cream-100">
-              <Image src={product.image} alt={product.name} fill className="object-cover" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-graphite-950">{product.name}</p>
-              <p className="text-sm text-graphite-800/70">{formatBRL(product.priceCents)}</p>
-            </div>
-          </div>
-
-          {orderBumps
-            .filter((b) => selectedBumps.has(b.id))
-            .map((b) => (
-              <div key={b.id} className="mt-3 flex justify-between text-sm text-graphite-800/80">
-                <span>{b.name}</span>
-                <span>{formatBRL(b.priceCents)}</span>
+        <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[1fr_380px] lg:items-start">
+          <div className="space-y-5">
+            <SectionCard icon={User} step={1} title="Seus dados">
+              <Input label="Nome completo" value={form.name} onChange={(v) => updateField("name", v)} required />
+              <div className="grid grid-cols-2 gap-3">
+                <Input label="CPF" value={form.cpf} onChange={(v) => updateField("cpf", v)} required placeholder="000.000.000-00" />
+                <Input label="Telefone" value={form.phone} onChange={(v) => updateField("phone", v)} required placeholder="(00) 00000-0000" />
               </div>
-            ))}
+              <Input label="E-mail" type="email" value={form.email} onChange={(v) => updateField("email", v)} required />
+            </SectionCard>
 
-          <div className="mt-4 space-y-1.5 border-t border-graphite-900/10 pt-4 text-sm">
-            <div className="flex justify-between text-graphite-800/70">
-              <span>Frete</span>
-              <span>Grátis</span>
-            </div>
-            <div className="flex justify-between text-base font-semibold text-graphite-950">
-              <span>Total</span>
-              <span>{formatBRL(total)}</span>
-            </div>
+            <SectionCard icon={MapPin} step={2} title="Endereço de entrega">
+              <Input label="CEP" value={form.zip} onChange={(v) => updateField("zip", v)} onBlur={handleCepBlur} required placeholder="00000-000" />
+              <div className="grid grid-cols-[1fr_120px] gap-3">
+                <Input label="Endereço" value={form.address} onChange={(v) => updateField("address", v)} required />
+                <Input label="Número" value={form.number} onChange={(v) => updateField("number", v)} required />
+              </div>
+              <Input label="Complemento (opcional)" value={form.complement} onChange={(v) => updateField("complement", v)} />
+              <Input label="Bairro" value={form.neighborhood} onChange={(v) => updateField("neighborhood", v)} required />
+              <div className="grid grid-cols-[1fr_90px] gap-3">
+                <Input label="Cidade" value={form.city} onChange={(v) => updateField("city", v)} required />
+                <Input label="UF" value={form.state} onChange={(v) => updateField("state", v.toUpperCase())} required maxLength={2} />
+              </div>
+            </SectionCard>
+
+            {orderBumps.length > 0 && (
+              <SectionCard icon={ShoppingBag} step={3} title="Produtos adicionais" optional>
+                <div className="space-y-3">
+                  {orderBumps.map((bump) => {
+                    const checked = selectedBumps.has(bump.id);
+                    return (
+                      <label
+                        key={bump.id}
+                        className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors ${
+                          checked ? "border-clay-500 bg-clay-50" : "border-graphite-900/10 bg-cream-50 hover:border-graphite-900/20"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 shrink-0 accent-clay-600"
+                          checked={checked}
+                          onChange={() => toggleBump(bump.id)}
+                        />
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-white">
+                          <Image src={bump.image} alt={bump.name} fill sizes="48px" className="object-cover" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-bold text-graphite-950">{bump.name}</p>
+                          <p className="truncate text-xs text-graphite-700/70">{bump.headline}</p>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          {bump.compareAtCents && (
+                            <p className="text-xs text-graphite-700/40 line-through">{formatBRL(bump.compareAtCents)}</p>
+                          )}
+                          <p className="text-sm font-extrabold text-graphite-950">{formatBRL(bump.priceCents)}</p>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </SectionCard>
+            )}
+
+            {error && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
           </div>
-        </aside>
+
+          <aside className="sticky top-4 space-y-4">
+            <div className="overflow-hidden rounded-xl2 bg-white shadow-lift ring-1 ring-graphite-950/[0.05]">
+              <div className="flex items-center gap-2 border-b border-graphite-900/10 px-5 py-3.5">
+                <ShoppingBag className="h-4 w-4 text-sage-600" />
+                <h2 className="text-sm font-extrabold text-graphite-950">Resumo do pedido</h2>
+              </div>
+
+              <div className="p-5">
+                <div className="flex gap-3">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-cream-100">
+                    <Image src={product.image} alt={product.name} fill sizes="80px" className="object-cover" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-graphite-950">{product.name}</p>
+                    <div className="mt-1 flex items-baseline gap-1.5">
+                      {product.compareAtCents && (
+                        <span className="text-xs text-graphite-700/40 line-through">{formatBRL(product.compareAtCents)}</span>
+                      )}
+                      <span className="text-sm font-extrabold text-graphite-950">{formatBRL(product.priceCents)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedBumpList.length > 0 && (
+                  <div className="mt-4 space-y-2 border-t border-graphite-900/10 pt-4">
+                    {selectedBumpList.map((b) => (
+                      <div key={b.id} className="flex items-center justify-between text-sm text-graphite-700">
+                        <span className="truncate pr-2">{b.name}</span>
+                        <span className="shrink-0 font-medium text-graphite-950">{formatBRL(b.priceCents)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-4 space-y-1.5 border-t border-graphite-900/10 pt-4 text-sm">
+                  <div className="flex justify-between text-graphite-700/80">
+                    <span>Frete</span>
+                    <span className="font-medium text-sage-700">Grátis</span>
+                  </div>
+                  <div className="flex justify-between text-lg font-extrabold text-graphite-950">
+                    <span>Total</span>
+                    <span>{formatBRL(total)}</span>
+                  </div>
+                </div>
+
+                <button type="submit" disabled={submitting} className="btn-primary mt-5 w-full">
+                  {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+                  {submitting ? "Gerando PIX..." : "GERAR PIX"}
+                </button>
+
+                <p className="mt-3 flex items-center justify-center gap-2 text-xs text-graphite-700/60">
+                  <ShieldCheck className="h-4 w-4 text-sage-600" /> Compra segura via PIX
+                </p>
+              </div>
+            </div>
+          </aside>
+        </form>
       </div>
     </main>
+  );
+}
+
+function SectionCard({
+  icon: Icon,
+  step,
+  title,
+  optional,
+  children,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  step: number;
+  title: string;
+  optional?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <fieldset className="card-surface p-5 sm:p-6">
+      <legend className="mb-4 flex items-center gap-2.5 px-0">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-graphite-950 text-xs font-bold text-cream-50">
+          {step}
+        </span>
+        <Icon className="h-4 w-4 text-sage-600" />
+        <span className="text-sm font-extrabold text-graphite-950">{title}</span>
+        {optional && <span className="text-xs font-normal text-graphite-700/50">(opcional)</span>}
+      </legend>
+      <div className="space-y-4">{children}</div>
+    </fieldset>
   );
 }
 
@@ -363,7 +447,7 @@ function Input({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium text-graphite-800/70">{label}</span>
+      <span className="mb-1 block text-xs font-medium text-graphite-700/80">{label}</span>
       <input
         type={type}
         value={value}
@@ -372,7 +456,7 @@ function Input({
         maxLength={maxLength}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
-        className="w-full rounded-lg border border-graphite-900/15 bg-cream-50 px-3.5 py-2.5 text-sm text-graphite-950 outline-none ring-amber-600/30 focus:ring-2"
+        className="w-full rounded-lg border border-graphite-900/15 bg-cream-50 px-3.5 py-2.5 text-sm text-graphite-950 outline-none ring-clay-500/30 focus:ring-2"
       />
     </label>
   );

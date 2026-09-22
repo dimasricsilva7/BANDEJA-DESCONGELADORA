@@ -93,7 +93,7 @@ export default function UpsellClient({ parentOrderId, product }: { parentOrderId
     <main className="min-h-screen bg-cream-50 py-14">
       <div className="container-app max-w-md">
         <div className="rounded-xl2 bg-white p-7 text-center shadow-soft">
-          <h1 className="font-serif text-xl text-graphite-950">{product.headline}</h1>
+          <h1 className="text-xl font-extrabold text-graphite-950">{product.headline}</h1>
 
           {!pix && (
             <>
@@ -103,7 +103,7 @@ export default function UpsellClient({ parentOrderId, product }: { parentOrderId
               <p className="mt-4 font-medium text-graphite-950">{product.name}</p>
               <div className="mt-2 flex items-baseline justify-center gap-2">
                 <span className="text-graphite-900/40 line-through">{formatBRL(product.compareAtCents)}</span>
-                <span className="font-serif text-2xl text-graphite-950">{formatBRL(product.priceCents)}</span>
+                <span className="text-2xl font-extrabold text-graphite-950">{formatBRL(product.priceCents)}</span>
               </div>
 
               {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
@@ -121,7 +121,7 @@ export default function UpsellClient({ parentOrderId, product }: { parentOrderId
           {pix?.pixCopyPaste && pix.status !== "PAID" && (
             <>
               {qrDataUrl && <Image src={qrDataUrl} alt="QR Code PIX" width={200} height={200} className="mx-auto mt-6 rounded-lg" unoptimized />}
-              <p className="mt-4 font-serif text-2xl">{formatBRL(pix.totalCents)}</p>
+              <p className="mt-4 text-2xl font-extrabold">{formatBRL(pix.totalCents)}</p>
               <button onClick={copyPix} className="btn-primary mt-5 w-full">
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                 {copied ? "Código copiado!" : "COPIAR CÓDIGO PIX"}

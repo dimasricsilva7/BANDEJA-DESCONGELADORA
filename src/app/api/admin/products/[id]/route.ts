@@ -19,6 +19,7 @@ const updateSchema = z.object({
   upsellPriceCents: z.number().int().positive().optional().nullable(),
   upsellHeadline: z.string().optional().nullable(),
   bravopayProductId: z.string().optional().nullable(),
+  shortPitch: z.string().optional().nullable(),
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

@@ -43,7 +43,7 @@ export default function LoginForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-graphite-900/15 px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-amber-600/30"
+          className="w-full rounded-lg border border-graphite-900/15 px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-clay-500/30"
         />
       </label>
       <label className="block">
@@ -53,7 +53,7 @@ export default function LoginForm() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-graphite-900/15 px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-amber-600/30"
+          className="w-full rounded-lg border border-graphite-900/15 px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-clay-500/30"
         />
       </label>
       {error && <p className="text-sm text-red-600">{error}</p>}

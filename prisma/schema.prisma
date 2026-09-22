@@ -71,9 +71,11 @@ model Product {
   upsellEnabled     Boolean     @default(false)
   upsellPriceCents  Int?
   upsellHeadline    String?
+  shortPitch        String?
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
   orderItems        OrderItem[]
+  reviews           Review[]
 }
 
 model Customer {
@@ -228,4 +230,25 @@ model Setting {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  customerName     String
+  city             String?
+  state            String?
+  rating           Int
+  testimonial      String
+  photoUrl         String?
+  productId        String?
+  product          Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  verifiedPurchase Boolean  @default(false)
+  published        Boolean  @default(false)
+  featured         Boolean  @default(false)
+  reviewDate       DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([published])
+  @@index([productId])
 }

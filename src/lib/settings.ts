@@ -6,11 +6,28 @@ export const DEFAULT_SETTINGS = {
   compare_at_cents: "28198",
   shipping_days: "5",
   guarantee_text: "Garantia total ou seu dinheiro de volta",
+  guarantee_days: "",
+  guarantee_conditions: "",
+  guarantee_how_to: "",
   contact_email: "contato@cozinhapratica.com.br",
   contact_whatsapp: "",
+  spec_material: "",
+  spec_dimensions: "",
+  spec_weight: "",
+  spec_package_contents: "",
+  spec_cleaning: "",
+  spec_usage: "",
+  spec_capacity: "",
+  spec_power: "",
+  spec_battery: "",
+  policy_privacy: "",
+  policy_terms: "",
+  policy_exchange: "",
+  policy_delivery: "",
+  company_info: "",
 };
 
-export type SettingsMap = Record<string, string>;
+export type SettingsMap = Record<string, string> & typeof DEFAULT_SETTINGS;
 
 export async function getSettings(): Promise<SettingsMap> {
   const rows = await db.setting.findMany();

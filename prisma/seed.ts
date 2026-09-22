@@ -42,22 +42,22 @@ async function main() {
     },
   });
 
-  const thermometer = await db.product.upsert({
-    where: { slug: "termometro-digital-para-carnes" },
+  const pegadores = await db.product.upsert({
+    where: { slug: "kit-pegadores-silicone" },
     update: {},
     create: {
-      name: "Termômetro Digital para Carnes",
-      slug: "termometro-digital-para-carnes",
-      description: "Acompanhe o ponto certo de preparo das suas carnes com leitura digital rápida.",
-      priceCents: 4990,
-      images: ["/images/kit-complementar.png"],
+      name: "Kit com 2 Pegadores de Silicone",
+      slug: "kit-pegadores-silicone",
+      description: "Pegadores de silicone para manusear alimentos e utensílios quentes com mais segurança e praticidade.",
+      priceCents: 2490,
+      shortPitch: "Mais praticidade para manusear alimentos e utensílios quentes.",
+      images: ["/images/kit-pegadores.png"],
       type: "COMPLEMENTARY",
       active: true,
       sortOrder: 1,
       orderBumpEnabled: true,
-      orderBumpPriceCents: 2990,
-      orderBumpHeadline:
-        "Com apenas mais R$ 29,90, leve também um termômetro digital para acompanhar o preparo das suas carnes.",
+      orderBumpPriceCents: 1990,
+      orderBumpHeadline: "Com apenas mais R$ 19,90, leve também um kit de pegadores de silicone.",
     },
   });
 
@@ -68,14 +68,34 @@ async function main() {
       name: "Tábua de Corte Antibacteriana/Impermeável",
       slug: "tabua-de-corte-antibacteriana",
       description: "Tábua prática, impermeável e fácil de higienizar para o preparo do dia a dia.",
-      priceCents: 5990,
+      priceCents: 3798,
+      shortPitch: "Uma companheira prática para preparar seus alimentos.",
       images: ["/images/kit-complementar.png"],
       type: "COMPLEMENTARY",
       active: true,
       sortOrder: 2,
       orderBumpEnabled: true,
-      orderBumpPriceCents: 3990,
-      orderBumpHeadline: "Complete seu kit de preparo adicionando uma tábua prática para sua cozinha.",
+      orderBumpPriceCents: 2990,
+      orderBumpHeadline: "Com apenas mais R$ 29,90, complete seu kit de preparo com uma tábua prática para sua cozinha.",
+    },
+  });
+
+  const knives = await db.product.upsert({
+    where: { slug: "lumai-jogo-de-facas-zurich" },
+    update: {},
+    create: {
+      name: "LUMAI Jogo de Facas de Cozinha Zurich — Aço Inoxidável High Carbon Steel",
+      slug: "lumai-jogo-de-facas-zurich",
+      description: "Conjunto de facas em aço inoxidável de alto carbono para o preparo do dia a dia na cozinha.",
+      priceCents: 7790,
+      shortPitch: "Tenha um conjunto completo para facilitar o preparo das refeições.",
+      images: ["/images/kit-complementar.png"],
+      type: "COMPLEMENTARY",
+      active: true,
+      sortOrder: 3,
+      orderBumpEnabled: true,
+      orderBumpPriceCents: 5990,
+      orderBumpHeadline: "Com apenas mais R$ 59,90, leve também um jogo de facas completo para sua cozinha.",
     },
   });
 
@@ -83,22 +103,22 @@ async function main() {
     where: { slug: "kit-cozinha-pratica" },
     update: {},
     create: {
-      name: "Kit Cozinha Prática (Termômetro + Tábua de Corte)",
+      name: "Kit Cozinha Prática (Pegadores + Tábua de Corte)",
       slug: "kit-cozinha-pratica",
       description: "O combo perfeito para quem quer mais praticidade em cada preparo.",
-      priceCents: 10980,
-      compareAtCents: 10980,
+      priceCents: pegadores.priceCents + cuttingBoard.priceCents,
+      compareAtCents: pegadores.priceCents + cuttingBoard.priceCents,
       images: ["/images/kit-complementar.png"],
       type: "UPSELL",
       active: true,
-      sortOrder: 3,
+      sortOrder: 4,
       upsellEnabled: true,
-      upsellPriceCents: 6990,
+      upsellPriceCents: 4990,
       upsellHeadline: "Seu pedido foi confirmado! Aproveite esta condição especial antes de finalizar.",
     },
   });
 
-  console.log("Seed concluído:", { main: main.slug, thermometer: thermometer.slug, cuttingBoard: cuttingBoard.slug });
+  console.log("Seed concluído:", { main: main.slug, pegadores: pegadores.slug, cuttingBoard: cuttingBoard.slug, knives: knives.slug });
 }
 
 main()

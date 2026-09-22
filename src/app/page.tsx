@@ -1,10 +1,17 @@
 import { db } from "@/lib/db";
 import { getSettings } from "@/lib/settings";
+import { getPublishedReviewStats, getPublishedReviews, getPublishedReviewPhotos } from "@/lib/reviews";
+import SiteHeader from "@/components/SiteHeader";
 import Hero from "@/components/Hero";
-import { ProblemSection, SolutionSection, HowItWorksSection } from "@/components/ProblemSolution";
+import { ProblemSection, HowItWorksSection } from "@/components/ProblemSolution";
+import ProductGallery from "@/components/ProductGallery";
 import Benefits from "@/components/Benefits";
+import Specifications from "@/components/Specifications";
 import Complementary from "@/components/Complementary";
-import SocialProof from "@/components/SocialProof";
+import Reviews from "@/components/Reviews";
+import CustomerPhotos from "@/components/CustomerPhotos";
+import Guarantee from "@/components/Guarantee";
+import { TrustSection } from "@/components/TrustBar";
 import Faq from "@/components/Faq";
 import FinalCta from "@/components/FinalCta";
 import StickyCta from "@/components/StickyCta";
@@ -14,19 +21,22 @@ import ViewContentTracker from "@/components/ViewContentTracker";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [settings, mainProduct, complementary] = await Promise.all([
+  const [settings, mainProduct, complementary, reviewStats, reviews, reviewPhotos] = await Promise.all([
     getSettings(),
     db.product.findFirst({ where: { type: "MAIN", active: true }, orderBy: { sortOrder: "asc" } }),
     db.product.findMany({
       where: { type: "COMPLEMENTARY", active: true },
       orderBy: { sortOrder: "asc" },
     }),
+    getPublishedReviewStats(),
+    getPublishedReviews(),
+    getPublishedReviewPhotos(),
   ]);
 
   if (!mainProduct) {
     return (
       <main className="flex min-h-screen items-center justify-center p-8 text-center">
-        <p className="text-graphite-800/70">
+        <p className="text-graphite-700/80">
           Nenhum produto ativo configurado ainda. Acesse o painel administrativo em{" "}
           <code>/admin</code> para cadastrar o produto principal.
         </p>
@@ -38,7 +48,7 @@ export default async function HomePage() {
   const compareAtCents = mainProduct.compareAtCents ?? 0;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  const productJsonLd = {
+  const productJsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: mainProduct.name,
@@ -55,12 +65,20 @@ export default async function HomePage() {
         shippingRate: { "@type": "MonetaryAmount", value: "0", currency: "BRL" },
         deliveryTime: {
           "@type": "ShippingDeliveryTime",
-          businessDays: { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"] },
+          businessDays: { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] },
           maxTransitTime: 5,
         },
       },
     },
   };
+
+  if (reviewStats.count > 0) {
+    productJsonLd.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: reviewStats.avg,
+      reviewCount: reviewStats.count,
+    };
+  }
 
   return (
     <main className="pb-16 sm:pb-0">
@@ -69,16 +87,43 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
       <ViewContentTracker productId={mainProduct.id} productName={mainProduct.name} priceCents={priceCents} />
-      <Hero priceCents={priceCents} compareAtCents={compareAtCents} heroImage={mainProduct.images[0] ?? "/images/produto-hero.png"} />
+      <SiteHeader storeName={settings.store_name} />
+      <Hero
+        priceCents={priceCents}
+        compareAtCents={compareAtCents}
+        heroImage={mainProduct.images[0] ?? "/images/produto-hero.png"}
+        reviewStats={reviewStats}
+      />
+      <TrustSection />
       <ProblemSection />
-      <SolutionSection />
       <HowItWorksSection />
+      <ProductGallery />
       <Benefits />
+      <Specifications settings={settings} />
       <Complementary products={complementary} />
-      <SocialProof />
+      <Reviews reviews={reviews} stats={reviewStats} />
+      <CustomerPhotos
+        photos={reviewPhotos
+          .filter((r) => r.photoUrl)
+          .map((r) => ({
+            id: r.id,
+            photoUrl: r.photoUrl as string,
+            customerName: r.customerName,
+            city: r.city,
+            state: r.state,
+            verifiedPurchase: r.verifiedPurchase,
+            productName: r.product?.name ?? null,
+          }))}
+      />
+      <Guarantee
+        text={settings.guarantee_text}
+        days={settings.guarantee_days || undefined}
+        conditions={settings.guarantee_conditions || undefined}
+        howTo={settings.guarantee_how_to || undefined}
+      />
       <Faq />
       <FinalCta priceCents={priceCents} compareAtCents={compareAtCents} />
-      <SiteFooter storeName={settings.store_name} contactEmail={settings.contact_email} />
+      <SiteFooter settings={settings} />
       <StickyCta priceCents={priceCents} />
     </main>
   );
