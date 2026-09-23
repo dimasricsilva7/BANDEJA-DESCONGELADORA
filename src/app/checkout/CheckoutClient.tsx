@@ -261,6 +261,11 @@ export default function CheckoutClient({ product, orderBumps }: { product: Produ
                     <li className="flex gap-2"><span className="font-bold text-clay-600">2.</span> Escolha pagar via PIX com QR Code ou copia e cola</li>
                     <li className="flex gap-2"><span className="font-bold text-clay-600">3.</span> Confirme o pagamento — a aprovação aqui é automática</li>
                   </ol>
+
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-graphite-700/70">
+                    <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-sage-600" /> Compra segura</span>
+                    <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-sage-600" /> Garantia total ou seu dinheiro de volta</span>
+                  </div>
                 </>
               ) : (
                 <p className="text-graphite-700/80">
