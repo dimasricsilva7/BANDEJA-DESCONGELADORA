@@ -25,6 +25,7 @@ export const DEFAULT_SETTINGS = {
   policy_exchange: "",
   policy_delivery: "",
   company_info: "",
+  demo_video_url: "",
 };
 
 export type SettingsMap = Record<string, string> & typeof DEFAULT_SETTINGS;

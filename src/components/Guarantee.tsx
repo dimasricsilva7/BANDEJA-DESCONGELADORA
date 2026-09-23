@@ -22,19 +22,21 @@ export default function Guarantee({
             <h2 className="text-xl font-extrabold text-graphite-950 sm:text-2xl">Compra com garantia</h2>
           </div>
 
-          <p className="mt-4 text-graphite-800">{text}{days ? ` — ${days}.` : "."}</p>
+          <p className="mt-4 text-lg font-medium leading-relaxed text-graphite-800">
+            {text}{days ? ` — ${days}.` : "."}
+          </p>
 
           {conditions && (
-            <div className="mt-4">
-              <p className="text-sm font-bold text-graphite-950">Condições</p>
-              <p className="mt-1 text-sm text-graphite-700/85">{conditions}</p>
+            <div className="mt-5">
+              <p className="text-base font-bold text-graphite-950">Condições</p>
+              <p className="mt-1.5 text-base leading-relaxed text-graphite-700/90">{conditions}</p>
             </div>
           )}
 
           {howTo && (
-            <div className="mt-4">
-              <p className="text-sm font-bold text-graphite-950">Como solicitar</p>
-              <p className="mt-1 text-sm text-graphite-700/85">{howTo}</p>
+            <div className="mt-5">
+              <p className="text-base font-bold text-graphite-950">Como solicitar</p>
+              <p className="mt-1.5 text-base leading-relaxed text-graphite-700/90">{howTo}</p>
             </div>
           )}
         </div>

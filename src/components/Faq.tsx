@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: "Como funciona a garantia?",
-    a: "Sua compra é protegida pela nossa política de garantia. Veja os detalhes na seção de garantia desta página ou entre em contato pelos nossos canais de atendimento.",
+    a: "Sua compra é protegida pela nossa política de garantia. Veja os detalhes na seção de garantia desta página ou entre em contato pelo nosso e-mail de suporte.",
   },
   {
     q: "Posso comprar mais de uma unidade?",

@@ -3,6 +3,7 @@ import { getSettings } from "@/lib/settings";
 import { getPublishedReviewStats, getPublishedReviews, getPublishedReviewPhotos } from "@/lib/reviews";
 import SiteHeader from "@/components/SiteHeader";
 import Hero from "@/components/Hero";
+import DemoVideo from "@/components/DemoVideo";
 import { ProblemSection, HowItWorksSection } from "@/components/ProblemSolution";
 import ProductGallery from "@/components/ProductGallery";
 import Benefits from "@/components/Benefits";
@@ -94,6 +95,7 @@ export default async function HomePage() {
         heroImage={mainProduct.images[0] ?? "/images/produto-hero.jpg"}
         reviewStats={reviewStats}
       />
+      <DemoVideo videoUrl={settings.demo_video_url} />
       <TrustSection />
       <ProblemSection />
       <HowItWorksSection />
