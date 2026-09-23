@@ -489,7 +489,7 @@ function Input({
   type?: string; required?: boolean; placeholder?: string; maxLength?: number;
 }) {
   return (
-    <label className="block">
+    <label className="block min-w-0">
       <span className="mb-1 block text-xs font-medium text-graphite-700/80">{label}</span>
       <input
         type={type}

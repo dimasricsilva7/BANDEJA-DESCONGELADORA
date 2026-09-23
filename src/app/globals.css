@@ -8,10 +8,12 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   @apply bg-cream-50 text-graphite-900 antialiased;
+  overflow-x: hidden;
 }
 
 ::selection {
